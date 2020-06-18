@@ -10,7 +10,7 @@ const cors = require('cors');
 
 const config = require('./config');
 const api = require('./api');
-
+const port = process.env.PORT || 3000
 const app = express();
 
 app.use(cors());
@@ -24,7 +24,9 @@ app.use(morgan('combined', {
   )
 }));
 // log to console
-app.use(morgan('dev'));
+if (config.MODE === 'development') {
+  app.use(morgan('dev'));
+};
 
 app.use('/', express.static(path.join(__dirname, 'client')));
 
@@ -35,8 +37,8 @@ app.use(function (err, req, res, next) {
   res.status(500).end();
 });
 
-app.listen(config.PORT, () => {
+app.listen(port, () => {
   console.log(
-    `listening at http://localhost:${config.PORT} (${config.MODE} mode)`
+    `listening at http://localhost:${port}${process.env.DB_PATH} (${config.MODE} mode)`
   );
-});
+}); 
